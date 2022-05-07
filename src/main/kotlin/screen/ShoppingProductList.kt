@@ -6,7 +6,7 @@ import data.Product
 import extensions.getNotEmptyInt
 import extensions.getNotEmptyString
 
-class ShoppingProductList {
+class ShoppingProductList : Screen() {
     private val products = arrayOf(
         Product("패션", "겨울 패딩"),
         Product("패션", "겨울 바지"),
@@ -23,27 +23,32 @@ class ShoppingProductList {
     private val categories: Map<String, List<Product>> = products.groupBy { product -> product.categoryLabel }
 
     fun showProducts(selectedCategory: String) {
+        ScreenStack.push(this)
         val categoryProducts = categories[selectedCategory]
-        if(!categoryProducts.isNullOrEmpty()) {
-            println("""
+        if (!categoryProducts.isNullOrEmpty()) {
+            println(
+                """
                 $LINE_DIVIDER
                 선택하신 [$selectedCategory] 카테고리 상품입니다.
-            """.trimIndent())
+            """.trimIndent()
+            )
             categoryProducts.forEachIndexed { index, product ->
                 println("${index}. ${product.name}")
             }
             showCartOption(categoryProducts, selectedCategory)
-            } else {
+        } else {
             showEmptyProductMessage(selectedCategory)
-            }
         }
+    }
 
     private fun showCartOption(categoryProducts: List<Product>, selectedCategory: String) {
-    println("""
+        println(
+            """
         $LINE_DIVIDER
         장바구니에 담을 상품 번호를 선택해주세요.
-    """.trimIndent())
-        
+    """.trimIndent()
+        )
+
         val selectIndex = readLine().getNotEmptyInt()
         categoryProducts.getOrNull(selectIndex)?.let { product ->
             CartItems.addProduct(product)
@@ -52,8 +57,8 @@ class ShoppingProductList {
             if (answer == "#") {
                 val shoppingCart = ShoppingCart()
                 shoppingCart.showCartItems()
-            } else if(answer == "*") {
-             showProducts(selectedCategory)
+            } else if (answer == "*") {
+                showProducts(selectedCategory)
             } else {
                 // TODO 그 외 값을 입력한 경우에 대한 처리
             }
